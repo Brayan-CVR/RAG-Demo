@@ -1,0 +1,72 @@
+# git config user.name "Brayan-CVR"
+# git config user.email "brayanv395@gmial.com"
+
+name: Sync Docs to gh-pages
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Git
+        run: |
+          git config user.name "Brayan-CVR"
+          git config user.email "brayanv395@gmial.com"
+
+      - name: Preparar contenido
+        run: |
+          # Verificar que la fuente existe
+          ls -la docs/build/html/
+          
+          # Copiar contenido a directorio temporal persistente
+          mkdir -p ~/gh-pages-temp
+          cp -R docs/build/html/* ~/gh-pages-temp/
+          
+          # Verificar copia exitosa
+          ls -la ~/gh-pages-temp/
+
+      - name: Actualizar gh-pages
+        run: |
+          # Cambiar a gh-pages (crear si no existe)
+          if ! git checkout gh-pages 2>/dev/null; then
+            git checkout --orphan gh-pages
+            git rm -rf .
+          fi
+          
+          # Conservar archivos importantes
+          for file in .gitignore .nojekyll; do
+            if [ -f "$file" ]; then
+              mv "$file" /tmp/
+            fi
+          done
+          
+          # Limpiar todo excepto .git
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+          
+          # Restaurar archivos importantes
+          for file in .gitignore .nojekyll; do
+            if [ -f "/tmp/$file" ]; then
+              mv "/tmp/$file" .
+            fi
+          done
+          
+          # Copiar nuevo contenido
+          cp -R ~/gh-pages-temp/* .
+          
+          # Commit y push
+          git add .
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -m "Actualización: $(date +'%F %T')"
+            git push origin gh-pages
+          fi
+          
+          # Limpieza
+          rm -rf ~/gh-pages-temp

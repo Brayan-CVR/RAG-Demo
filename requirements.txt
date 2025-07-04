@@ -1,0 +1,6 @@
+#Automatic documentation
+sphinx
+sphinx_rtd_theme 
+pytest
+myst-parser
+furo

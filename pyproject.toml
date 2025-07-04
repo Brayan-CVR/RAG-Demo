@@ -1,0 +1,30 @@
+[project]
+name = "Python-project-template"
+version = "1.0.0"
+description = "Clicker python application"
+authors = [
+    {name = "Brayan Camilo Valenzuela Rincon", email = "brayanv395@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+
+dependencies = [
+    "numpy>=1.21.0",
+    "pandas>=1.3.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "black",
+    "flake8"
+]
+
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["src"]
+package-dir = {"src" = "src"}
