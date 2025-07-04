@@ -1,7 +1,7 @@
-# Python Project Template
+# RAG-Demo
 
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
-[![Documentation Status](https://img.shields.io/badge/docs-latest-brightgreen)](https://brayan-cvr.github.io/Python-project-template/)
+[![Documentation Status](https://img.shields.io/badge/docs-latest-brightgreen)](https://brayan-cvr.github.io/RAG-Demo/)
 
 A reusable Python project template with modern development tools and automated documentation.
 
@@ -9,7 +9,7 @@ A reusable Python project template with modern development tools and automated d
 
 Full documentation is hosted on GitHub Pages:
 
-🔗 **View Documentation**: [https://brayan-cvr.github.io/Python-project-template/](https://brayan-cvr.github.io/Python-project-template/)
+🔗 **View Documentation**: [https://brayan-cvr.github.io/RAG-Demo/](https://brayan-cvr.github.io/RAG-Demo/)
 
 ## 🚀 Features
 
