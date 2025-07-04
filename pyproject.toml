@@ -1,30 +1,21 @@
 [project]
-name = "Python-project-template"
-version = "1.0.0"
-description = "Clicker python application"
+name = "rag-demo"
+version = "0.1.0"
+description = "This project is used as a demo to demonstrate the capabilities of a RAG application."
 authors = [
-    {name = "Brayan Camilo Valenzuela Rincon", email = "brayanv395@gmail.com"}
+    {name = "Brayan Valenzuela"}
 ]
 readme = "README.md"
-requires-python = ">=3.8"
-license = {text = "MIT"}
-
+requires-python = ">=3.13"
 dependencies = [
-    "numpy>=1.21.0",
-    "pandas>=1.3.0"
+    "sphinx (>=8.2.3,<9.0.0)",
+    "sphinx-rtd-theme (>=3.0.2,<4.0.0)",
+    "pytest (>=8.4.1,<9.0.0)",
+    "myst-parser (>=4.0.1,<5.0.0)",
+    "furo (>=2024.8.6,<2025.0.0)"
 ]
 
-[project.optional-dependencies]
-dev = [
-    "pytest>=7.0",
-    "black",
-    "flake8"
-]
 
 [build-system]
-requires = ["setuptools>=42"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools]
-packages = ["src"]
-package-dir = {"src" = "src"}
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
