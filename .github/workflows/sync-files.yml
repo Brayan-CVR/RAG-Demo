@@ -58,6 +58,9 @@ jobs:
             fi
           done
           
+          # Crear .nojekyll manualmente
+          touch .nojekyll
+          
           # Copiar nuevo contenido
           cp -R ~/gh-pages-temp/* .
           

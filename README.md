@@ -18,4 +18,4 @@ Full documentation is hosted on GitHub Pages:
 - Documentation support (Sphinx/MkDocs)
 - GitHub Actions CI/CD pipeline
 - Easy customization for new projects
-- Dependency management using poetry
+- Dependency management using poetry.
