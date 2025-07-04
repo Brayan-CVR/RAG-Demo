@@ -26,6 +26,6 @@ This project include an automatization process using, GitHub actions, to publish
 
 So, to set up this function in your project, remember:
 
-    1. Create a new branch in your project called "gh-pages". This will be used to store the documentation page code.
-    2. In your repository, go to: settings/actions/general. At the end in Workflow permissions section. Mark "Read and write permissions".
-    3. In the repository settings, go to pages/Build and deployment. In source select "Deploy from a branch", in branch select "gh-pages" branch with the root folder.   
+1. Create a new branch in your project called "gh-pages". This will be used to store the documentation page code.
+2. In your repository, go to: settings/actions/general. At the end in Workflow permissions section. Mark "Read and write permissions".
+3. In the repository settings, go to pages/Build and deployment. In source select "Deploy from a branch", in branch select "gh-pages" branch with the root folder.   
