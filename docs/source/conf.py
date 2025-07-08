@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.abspath('../../src'))  # Ajusta según tu estructura
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Python-project-template'
+project = 'RAG-Demo'
 copyright = '2025, Brayan Camilo Valenzuela Rincon'
 author = 'Brayan Camilo Valenzuela Rincon'
 release = '1.0.0'

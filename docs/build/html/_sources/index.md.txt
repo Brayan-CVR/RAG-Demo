@@ -1,6 +1,6 @@
-# Python-project-template
+# RAG-Demo
 
-This project is a template for developing specialized routines and utilities.
+xxx.
 
 ```{warning}
 Project under development
