@@ -5,7 +5,7 @@
 ![LangChain](https://img.shields.io/badge/LangChain-0.3.x-orange) 
 ![Ollama](https://img.shields.io/badge/Ollama-LLM_Integration-green)
 
-A Python **Retrieval-Augmented Generation (RAG)** project for document processing with local or remote LLM models. Includes text extraction, embeddings, vector stores, and contextual answer generation.
+Python **Retrieval-Augmented Generation (RAG)** project for document processing with local or remote LLM models. Includes text extraction, embeddings, vector stores, and contextual answer generation.
 
 ## 📚 Documentation
 

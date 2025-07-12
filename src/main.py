@@ -112,7 +112,7 @@ def main_process(
 
 if __name__ == "__main__":
     # Parameters
-    generate_vs = True
+    generate_vs = False
     vs_path = "/Users/brayan/Documents/RAG-Demo/src/vectorStore/vs_local"
     context_document_path = "/Users/brayan/Documents/RAG-Demo/src/vectorStore/samples/Cuarto-informe-de-gestion-SEB-firmado-300125.pdf"
     collection_name = "informe_ministerio_de_educacion"
