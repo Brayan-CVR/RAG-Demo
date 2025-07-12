@@ -1,0 +1,147 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>llm.promp &mdash; RAG-Demo 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            RAG-Demo
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about_this_documentation.html">𓂀 About this Sphinx documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">🚀 Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">📦 Packages</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">RAG-Demo</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">llm.promp</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for llm.promp</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.prompts</span><span class="w"> </span><span class="kn">import</span> <span class="n">PromptTemplate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chains</span><span class="w"> </span><span class="kn">import</span> <span class="n">RetrievalQA</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">__get_prompt_template_base__</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">PromptTemplate</span><span class="p">:</span>
+    <span class="n">custom_prompt_template</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    Eres un asistente experto en análisis de políticas públicas de seguridad de la información y privacidad. </span>
+<span class="s2">    Tienes acceso a fragmentos del documento oficial llamado &quot;Plan Estratégico de Seguridad y Privacidad de la Información 2024&quot;.</span>
+
+<span class="s2">    Este plan fue diseñado con base en estándares internacionales, evaluaciones de riesgo, marcos legales y buenas prácticas para garantizar la protección de datos y sistemas críticos. </span>
+<span class="s2">    Contiene diagnósticos, objetivos estratégicos, controles de seguridad y protocolos de actuación.</span>
+
+<span class="s2">    **Instrucciones:**</span>
+<span class="s2">    1. Usa ÚNICAMENTE la información proporcionada en los fragmentos del documento para responder.</span>
+<span class="s2">    2. Sé preciso y técnico en respuestas relacionadas con ciberseguridad y privacidad.</span>
+<span class="s2">    3. Si la pregunta requiere información externa o no está en el documento, responde: </span>
+<span class="s2">    “No se encuentra información suficiente en el documento para responder con certeza”.</span>
+
+<span class="s2">    Pregunta: </span><span class="si">{question}</span>
+
+<span class="s2">    Fragmentos del documento:</span>
+<span class="s2">    </span><span class="si">{context}</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+    <span class="n">prompt</span> <span class="o">=</span> <span class="n">PromptTemplate</span><span class="p">(</span>
+        <span class="n">template</span><span class="o">=</span><span class="n">custom_prompt_template</span><span class="p">,</span> <span class="n">input_variables</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;context&quot;</span><span class="p">,</span> <span class="s2">&quot;question&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">prompt</span>
+
+
+<div class="viewcode-block" id="get_qa_chain">
+<a class="viewcode-back" href="../../llm.html#llm.promp.get_qa_chain">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_qa_chain</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">retriever</span><span class="p">):</span>
+    <span class="n">prompt</span> <span class="o">=</span> <span class="n">__get_prompt_template_base__</span><span class="p">()</span>
+
+    <span class="n">qa</span> <span class="o">=</span> <span class="n">RetrievalQA</span><span class="o">.</span><span class="n">from_chain_type</span><span class="p">(</span>
+        <span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">,</span>
+        <span class="n">chain_type</span><span class="o">=</span><span class="s2">&quot;stuff&quot;</span><span class="p">,</span>
+        <span class="n">retriever</span><span class="o">=</span><span class="n">retriever</span><span class="p">,</span>
+        <span class="n">return_source_documents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">chain_type_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="n">prompt</span><span class="p">},</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">qa</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Brayan Camilo Valenzuela Rincon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -26,10 +26,46 @@ def main_process(
     llm_name: str,
     show_metadata:bool
 ) -> bool:
-    """Main process of this application.
+    """Orchestrates the main RAG (Retrieval-Augmented Generation) pipeline.
+
+    This function handles:
+    - Vector Store creation (when needed)
+    - Embedding model loading
+    - Retriever configuration 
+    - LLM model initialization
+    - Interactive query execution
+
+    Args:
+        generate_vs (bool): If True, creates new Vector Store. If False, uses existing one.
+        vs_path (str): Path to store/create the Vector Store.
+        context_document_path (str): PDF document path for embeddings (if generate_vs=True).
+        collection_name (str): ChromaDB collection name.
+        embedding_model_name (str): Embedding model name (e.g., "sentence-transformers/all-MiniLM-L6-v2").
+        chunk_size (int): Document chunk size (in tokens).
+        chunk_overlap (int): Chunk overlap size (in tokens).
+        llm_name (str): LLM model name to load (e.g., "gemma:2b").
+        show_metadata (bool): If True, displays metadata of retrieved documents.
 
     Returns:
-        bool: True if everithing its okay false in constrast.
+        bool: True if execution succeeds, False if any error occurs.
+
+    Raises:
+        Exception: Logs critical errors before returning False.
+
+    Example:
+        >>> if __name__ == "__main__":
+        ...     params = {
+        ...         "generate_vs": True,
+        ...         "vs_path": "/path/to/vectorstore",
+        ...         # ... other parameters ...
+        ...     }
+        ...     success = main_process(**params)
+        ...     print("Success:" if success else "Failed:", success)
+
+    Note:
+        - For production use, consider adding input validation
+        - ChromaDB persistence depends on vs_path configuration
+        - LLM performance depends on proper chunk_size configuration
     """
     try:
         logger.info("Running main process.\n")

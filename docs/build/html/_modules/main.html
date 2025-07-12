@@ -73,17 +73,14 @@
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Entrypoint of the Project.</span>
-
-<span class="sd">This project serves as a template for building a more elaborate routine with specific functionalities.</span>
-<span class="sd">By default this project includes the utils module, where functions are defined to relaunch the instance</span>
-<span class="sd">of a logger and print the general aspects of the python version.</span>
-<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># Custom imports</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">initialization.system_information</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_python_details</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">initialization.logger_control</span><span class="w"> </span><span class="kn">import</span> <span class="n">start_logger</span><span class="p">,</span> <span class="n">get_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">vectorStore.vs</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_vector_store</span><span class="p">,</span> <span class="n">set_chroma_as_retriever</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">vectorStore.embeddings</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_embedding_model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">llm.load_llm</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_ollama_llms</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">llm.promp</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_qa_chain</span>
 
 <span class="c1"># Star logger</span>
 <span class="n">start_logger</span><span class="p">()</span>
@@ -92,15 +89,95 @@
 
 <div class="viewcode-block" id="main_process">
 <a class="viewcode-back" href="../main.html#main.main_process">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">main_process</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;_summary_</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main_process</span><span class="p">(</span>
+    <span class="n">generate_vs</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">vs_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">context_document_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">collection_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">embedding_model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">chunk_overlap</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">llm_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">show_metadata</span><span class="p">:</span><span class="nb">bool</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Orchestrates the main RAG (Retrieval-Augmented Generation) pipeline.</span>
+
+<span class="sd">    This function handles:</span>
+<span class="sd">    - Vector Store creation (when needed)</span>
+<span class="sd">    - Embedding model loading</span>
+<span class="sd">    - Retriever configuration </span>
+<span class="sd">    - LLM model initialization</span>
+<span class="sd">    - Interactive query execution</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        generate_vs (bool): If True, creates new Vector Store. If False, uses existing one.</span>
+<span class="sd">        vs_path (str): Path to store/create the Vector Store.</span>
+<span class="sd">        context_document_path (str): PDF document path for embeddings (if generate_vs=True).</span>
+<span class="sd">        collection_name (str): ChromaDB collection name.</span>
+<span class="sd">        embedding_model_name (str): Embedding model name (e.g., &quot;sentence-transformers/all-MiniLM-L6-v2&quot;).</span>
+<span class="sd">        chunk_size (int): Document chunk size (in tokens).</span>
+<span class="sd">        chunk_overlap (int): Chunk overlap size (in tokens).</span>
+<span class="sd">        llm_name (str): LLM model name to load (e.g., &quot;gemma:2b&quot;).</span>
+<span class="sd">        show_metadata (bool): If True, displays metadata of retrieved documents.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        bool: _description_</span>
+<span class="sd">        bool: True if execution succeeds, False if any error occurs.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: Logs critical errors before returning False.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; if __name__ == &quot;__main__&quot;:</span>
+<span class="sd">        ...     params = {</span>
+<span class="sd">        ...         &quot;generate_vs&quot;: True,</span>
+<span class="sd">        ...         &quot;vs_path&quot;: &quot;/path/to/vectorstore&quot;,</span>
+<span class="sd">        ...         # ... other parameters ...</span>
+<span class="sd">        ...     }</span>
+<span class="sd">        ...     success = main_process(**params)</span>
+<span class="sd">        ...     print(&quot;Success:&quot; if success else &quot;Failed:&quot;, success)</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        - For production use, consider adding input validation</span>
+<span class="sd">        - ChromaDB persistence depends on vs_path configuration</span>
+<span class="sd">        - LLM performance depends on proper chunk_size configuration</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running main process.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">print_python_details</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">generate_vs</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Generating Vector Store...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">create_vector_store</span><span class="p">(</span>
+                <span class="n">vs_path</span><span class="o">=</span><span class="n">vs_path</span><span class="p">,</span>
+                <span class="n">sample_path</span><span class="o">=</span><span class="n">context_document_path</span><span class="p">,</span>
+                <span class="n">vs_collection_name</span><span class="o">=</span><span class="n">collection_name</span><span class="p">,</span>
+                <span class="n">embedding_model_name</span><span class="o">=</span><span class="n">embedding_model_name</span><span class="p">,</span>
+                <span class="n">chunk_size</span><span class="o">=</span><span class="n">chunk_size</span><span class="p">,</span>
+                <span class="n">chunk_overlap</span><span class="o">=</span><span class="n">chunk_overlap</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">embedding_model</span> <span class="o">=</span> <span class="n">get_embedding_model</span><span class="p">(</span><span class="n">embedding_model_name</span><span class="p">)</span>
+
+        <span class="n">retriever</span> <span class="o">=</span> <span class="n">set_chroma_as_retriever</span><span class="p">(</span>
+            <span class="n">embedding_model</span><span class="p">,</span> <span class="n">vs_path</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">,</span> <span class="mi">10</span>
+        <span class="p">)</span>
+
+        <span class="n">llm_model</span> <span class="o">=</span> <span class="n">get_ollama_llms</span><span class="p">(</span><span class="n">llm_name</span><span class="p">)</span>
+
+        <span class="n">qa</span> <span class="o">=</span> <span class="n">get_qa_chain</span><span class="p">(</span><span class="n">llm_model</span><span class="p">,</span> <span class="n">retriever</span><span class="p">)</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese su consulta: &quot;</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">qa</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">q</span><span class="p">})</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;----RESPUESTA----: </span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">show_metadata</span><span class="p">:</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;source_documents&quot;</span><span class="p">]:</span>
+                <span class="n">metadata</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">_</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;page&quot;</span><span class="p">],</span> <span class="n">_</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;file_path&quot;</span><span class="p">]))</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -109,8 +186,29 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># Parameters</span>
+    <span class="n">generate_vs</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">vs_path</span> <span class="o">=</span> <span class="s2">&quot;/Users/brayan/Documents/RAG-Demo/src/vectorStore/vs_local&quot;</span>
+    <span class="n">context_document_path</span> <span class="o">=</span> <span class="s2">&quot;/Users/brayan/Documents/RAG-Demo/src/vectorStore/samples/Cuarto-informe-de-gestion-SEB-firmado-300125.pdf&quot;</span>
+    <span class="n">collection_name</span> <span class="o">=</span> <span class="s2">&quot;informe_ministerio_de_educacion&quot;</span>
+    <span class="n">embedding_model_name</span> <span class="o">=</span> <span class="s2">&quot;sentence-transformers/all-MiniLM-L6-v2&quot;</span>
+    <span class="n">chunk_size</span> <span class="o">=</span> <span class="mi">800</span>
+    <span class="n">chunk_overlap</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">llm_name</span> <span class="o">=</span> <span class="s2">&quot;gemma:2b&quot;</span>
+    <span class="n">show_metadata</span> <span class="o">=</span> <span class="kc">False</span>
+
     <span class="c1"># Start the main execution process</span>
-    <span class="k">if</span> <span class="n">main_process</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">main_process</span><span class="p">(</span>
+        <span class="n">generate_vs</span><span class="o">=</span><span class="n">generate_vs</span><span class="p">,</span>
+        <span class="n">vs_path</span><span class="o">=</span><span class="n">vs_path</span><span class="p">,</span>
+        <span class="n">context_document_path</span><span class="o">=</span><span class="n">context_document_path</span><span class="p">,</span>
+        <span class="n">collection_name</span><span class="o">=</span><span class="n">collection_name</span><span class="p">,</span>
+        <span class="n">embedding_model_name</span><span class="o">=</span><span class="n">embedding_model_name</span><span class="p">,</span>
+        <span class="n">chunk_size</span><span class="o">=</span><span class="n">chunk_size</span><span class="p">,</span>
+        <span class="n">chunk_overlap</span><span class="o">=</span><span class="n">chunk_overlap</span><span class="p">,</span>
+        <span class="n">llm_name</span><span class="o">=</span><span class="n">llm_name</span><span class="p">,</span>
+        <span class="n">show_metadata</span> <span class="o">=</span> <span class="n">show_metadata</span>
+    <span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Successful execution.&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Failed execution.&quot;</span><span class="p">)</span>
