@@ -72,22 +72,59 @@
              
   <section id="module-main">
 <span id="main-module"></span><h1>main module<a class="headerlink" href="#module-main" title="Link to this heading"></a></h1>
-<p>Entrypoint of the Project.</p>
-<p>This project serves as a template for building a more elaborate routine with specific functionalities.
-By default this project includes the utils module, where functions are defined to relaunch the instance
-of a logger and print the general aspects of the python version.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="main.main_process">
-<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">main_process</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/main.html#main_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.main_process" title="Link to this definition"></a></dt>
-<dd><p>_summary_</p>
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">main_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">generate_vs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vs_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_document_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_model_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_overlap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llm_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/main.html#main_process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.main_process" title="Link to this definition"></a></dt>
+<dd><p>Orchestrates the main RAG (Retrieval-Augmented Generation) pipeline.</p>
+<p>This function handles:
+- Vector Store creation (when needed)
+- Embedding model loading
+- Retriever configuration
+- LLM model initialization
+- Interactive query execution</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>_description_</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>generate_vs</strong> (<em>bool</em>) – If True, creates new Vector Store. If False, uses existing one.</p></li>
+<li><p><strong>vs_path</strong> (<em>str</em>) – Path to store/create the Vector Store.</p></li>
+<li><p><strong>context_document_path</strong> (<em>str</em>) – PDF document path for embeddings (if generate_vs=True).</p></li>
+<li><p><strong>collection_name</strong> (<em>str</em>) – ChromaDB collection name.</p></li>
+<li><p><strong>embedding_model_name</strong> (<em>str</em>) – Embedding model name (e.g., “sentence-transformers/all-MiniLM-L6-v2”).</p></li>
+<li><p><strong>chunk_size</strong> (<em>int</em>) – Document chunk size (in tokens).</p></li>
+<li><p><strong>chunk_overlap</strong> (<em>int</em>) – Chunk overlap size (in tokens).</p></li>
+<li><p><strong>llm_name</strong> (<em>str</em>) – LLM model name to load (e.g., “gemma:2b”).</p></li>
+<li><p><strong>show_metadata</strong> (<em>bool</em>) – If True, displays metadata of retrieved documents.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if execution succeeds, False if any error occurs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – Logs critical errors before returning False.</p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s2">&quot;generate_vs&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;vs_path&quot;</span><span class="p">:</span> <span class="s2">&quot;/path/to/vectorstore&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="c1"># ... other parameters ...</span>
+<span class="gp">... </span>    <span class="p">}</span>
+<span class="gp">... </span>    <span class="n">success</span> <span class="o">=</span> <span class="n">main_process</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Success:&quot;</span> <span class="k">if</span> <span class="n">success</span> <span class="k">else</span> <span class="s2">&quot;Failed:&quot;</span><span class="p">,</span> <span class="n">success</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>For production use, consider adding input validation</p></li>
+<li><p>ChromaDB persistence depends on vs_path configuration</p></li>
+<li><p>LLM performance depends on proper chunk_size configuration</p></li>
+</ul>
+</div>
 </dd></dl>
 
 </section>

@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>initialization.logger_control &mdash; RAG-Demo 1.0.0 documentation</title>
+  <title>documents.load_docs &mdash; RAG-Demo 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
@@ -60,7 +60,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">initialization.logger_control</li>
+      <li class="breadcrumb-item active">documents.load_docs</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -69,50 +69,45 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for initialization.logger_control</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+  <h1>Source code for documents.load_docs</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_community.document_loaders</span><span class="w"> </span><span class="kn">import</span> <span class="n">PyMuPDFLoader</span>
 
 
-<div class="viewcode-block" id="start_logger">
-<a class="viewcode-back" href="../../initialization.logger_control.html#initialization.logger_control.start_logger">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">start_logger</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the basic configuration for the logging system.</span>
+<div class="viewcode-block" id="load_pdf_doc">
+<a class="viewcode-back" href="../../documents.html#documents.load_docs.load_pdf_doc">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_pdf_doc</span><span class="p">(</span><span class="n">doc_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Loads a PDF document and extracts its content as a list of document objects.</span>
 
-<span class="sd">    This function sets up the root logger with a basic configuration that includes:</span>
-<span class="sd">    - Logging level: INFO (captures INFO, WARNING, ERROR and CRITICAL messages)</span>
-
-<span class="sd">    Note:</span>
-<span class="sd">        This should be called only once at the beginning of the application setup.</span>
-<span class="sd">        Subsequent calls won&#39;t have any effect unless the logging system is reset.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
-        <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
-        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> - </span><span class="si">%(name)s</span><span class="s2"> - </span><span class="si">%(levelname)s</span><span class="s2"> - </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
-    <span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="get_logger">
-<a class="viewcode-back" href="../../initialization.logger_control.html#initialization.logger_control.get_logger">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_logger</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a logger instance with the specified name.</span>
-
-<span class="sd">    Creates or retrieves a logger with the given name. The logger will inherit</span>
-<span class="sd">    the configuration set by start_logger() if it has been called previously.</span>
+<span class="sd">    This function uses PyMuPDFLoader from langchain_community to load and parse</span>
+<span class="sd">    the content of a PDF file, including text and basic metadata (such as page numbers).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        name (str): Name to identify the logger. Typically you would use __name__</span>
-<span class="sd">            to automatically create loggers that match the module hierarchy.</span>
+<span class="sd">        doc_path (str): Absolute or relative path to the PDF file to be loaded.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        logging.Logger: Configured logger instance ready for use.</span>
+<span class="sd">        list: List of documents (typically LangChain Document objects) where each element</span>
+<span class="sd">              represents a PDF page with its content and metadata.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        FileNotFoundError: If the specified file in doc_path doesn&#39;t exist.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; logger = get_logger(__name__)</span>
-<span class="sd">        &gt;&gt;&gt; logger.info(&quot;This is an info message&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; documents = load_pdf_doc(&quot;report.pdf&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(f&quot;Loaded {len(documents)} pages&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(documents[0].page_content)  # Content of first page</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        - The PDF must be accessible and have read permissions.</span>
+<span class="sd">        - PyMuPDFLoader extracts text but doesn&#39;t preserve complex formatting</span>
+<span class="sd">          (tables, images as text).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">logger</span></div>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">doc_path</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;El archivo no existe: </span><span class="si">{</span><span class="n">doc_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">loader</span> <span class="o">=</span> <span class="n">PyMuPDFLoader</span><span class="p">(</span><span class="n">doc_path</span><span class="p">)</span>
+    <span class="n">doc_pdf</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">doc_pdf</span></div>
 
 </pre></div>
 

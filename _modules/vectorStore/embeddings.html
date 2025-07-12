@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>initialization.system_information &mdash; RAG-Demo 1.0.0 documentation</title>
+  <title>vectorStore.embeddings &mdash; RAG-Demo 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
@@ -60,7 +60,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">initialization.system_information</li>
+      <li class="breadcrumb-item active">vectorStore.embeddings</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -69,34 +69,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for initialization.system_information</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+  <h1>Source code for vectorStore.embeddings</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_community.embeddings.fastembed</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastEmbedEmbeddings</span>
 
 
-<div class="viewcode-block" id="print_python_details">
-<a class="viewcode-back" href="../../initialization.system_information.html#initialization.system_information.print_python_details">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">print_python_details</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Prints essential information about the current Python environment.</span>
-
-<span class="sd">    This function displays key details about the Python interpreter being used,</span>
-<span class="sd">    including:</span>
-<span class="sd">    - Python version (major.minor.patch)</span>
-<span class="sd">    - Python installation path (executable location)</span>
-
-<span class="sd">    The output is useful for debugging and ensuring the correct Python environment</span>
-<span class="sd">    is being used, especially in scenarios with multiple Python installations.</span>
-
-<span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; print_python_details()</span>
-<span class="sd">        Python Version: 3.9.7</span>
-<span class="sd">        Installation path: /usr/local/bin/python3.9</span>
-
-<span class="sd">    Note:</span>
-<span class="sd">        This function uses sys.version and sys.executable to gather the information.</span>
-<span class="sd">        No external dependencies are required.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Python Version: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Installation path: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+<span class="c1"># &quot;sentence-transformers/all-MiniLM-L6-v2&quot;</span>
+<div class="viewcode-block" id="get_embedding_model">
+<a class="viewcode-back" href="../../vectorStore.html#vectorStore.embeddings.get_embedding_model">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_embedding_model</span><span class="p">(</span><span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FastEmbedEmbeddings</span><span class="p">:</span>
+    <span class="n">embed_model</span> <span class="o">=</span> <span class="n">FastEmbedEmbeddings</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">embed_model</span></div>
 
 </pre></div>
 
