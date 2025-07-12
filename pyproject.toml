@@ -6,13 +6,19 @@ authors = [
     {name = "Brayan Camilo Valenzuela Rincon"}
 ]
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.13,<4.0"
 dependencies = [
     "sphinx (>=8.2.3,<9.0.0)",
     "sphinx-rtd-theme (>=3.0.2,<4.0.0)",
     "pytest (>=8.4.1,<9.0.0)",
     "myst-parser (>=4.0.1,<5.0.0)",
     "furo (>=2024.8.6,<2025.0.0)",
+    "langchain (>=0.3.26,<0.4.0)",
+    "langchain-community (>=0.3.27,<0.4.0)",
+    "langchain-chroma (>=0.2.4,<0.3.0)",
+    "pymupdf (>=1.26.3,<2.0.0)",
+    "fastembed (>=0.7.1,<0.8.0)",
+    "langchain-ollama (>=0.3.4,<0.4.0)",
 ]
 
 
